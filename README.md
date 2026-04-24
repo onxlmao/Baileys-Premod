@@ -1569,13 +1569,13 @@ const logger = pino({ level: 'info' }) // or 'warn' to reduce output further
 <table>
 <tr>
 <td align="center">
-<a href="https://github.com/BF667-IDLE">
-<img src="https://github.com/BF667-IDLE.png" width="110px" height="110px" alt="BF667-IDLE" style="border-radius:50%; border: 2px solid #25D366;" /><br/>
+<a href="https://github.com/onxlmao">
+<img src="https://github.com/onxlmao.png" width="110px" height="110px" alt="BF667-IDLE" style="border-radius:50%; border: 2px solid #25D366;" /><br/>
 <img src="https://img.shields.io/badge/Maintainer-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
 </a>
-<h4><a href="https://github.com/BF667-IDLE">BF667-IDLE</a></h4>
+<h4><a href="https://github.com/onxlmao">onxlmao</a></h4>
 <p><b>Baileys Premod</b><br/>Premod maintainer, features & bug fixes</p>
-<a href="https://github.com/BF667-IDLE?tab=repositories"><img src="https://img.shields.io/badge/Repos-25D366?style=flat-square&logo=github&logoColor=white" /></a>
+<a href="https://github.com/onxlmao?tab=repositories"><img src="https://img.shields.io/badge/Repos-25D366?style=flat-square&logo=github&logoColor=white" /></a>
 <a href="https://github.com/BF667-IDLE?tab=followers"><img src="https://img.shields.io/badge/Followers-25D366?style=flat-square&logo=github&logoColor=white" /></a>
 </td>
 <td align="center">
