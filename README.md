@@ -9,7 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=white)](https://web.whatsapp.com/)
 
-Maintained by [BF667-IDLE](https://github.com/BF667-IDLE) · Based on [Baileys](https://github.com/WhiskeySockets/Baileys) by Adhiraj Singh
+Maintained by [onxlmao](https://github.com/onxlmao) · Based on [Baileys](https://github.com/WhiskeySockets/Baileys) by Adhiraj Singh
 
 </div>
 
@@ -104,7 +104,7 @@ Add to your `package.json`:
 ```json
 {
   "dependencies": {
-    "baileys": "github:BF667-IDLE/baileys-premod"
+    "baileys": "github:onxlmao/baileys-premod"
   }
 }
 ```
