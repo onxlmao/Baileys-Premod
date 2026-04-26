@@ -807,6 +807,26 @@ export const generateWAMessageContent = async(
                 m[messageType].contextInfo = message.contextInfo
         }
 
+        // AI icon support: embed botMetadata in messageContextInfo (proto layer)
+        // This is required for groups where the stanza-level <bot> node may not be
+        // relayed to all participants by WhatsApp's server — only the encrypted payload is.
+        // By embedding botMetadata in the proto, it survives sender key encryption and is
+        // available to all participants when they decrypt the message.
+        // The stanza-level <bot biz_bot="1"/> node is still added in messages-send.ts
+        // for private chats where it works reliably at the stanza level.
+        if('ai' in message && !!message.ai) {
+                const botMetadata: proto.IBotMetadata = typeof message.ai === 'object'
+                        ? message.ai
+                        : {
+                                personaId: 'baileys-premod',
+                        }
+
+                m.messageContextInfo = {
+                        ...(m.messageContextInfo || {}),
+                        botMetadata,
+                }
+        }
+
         return WAProto.Message.fromObject(m)
 }
 
