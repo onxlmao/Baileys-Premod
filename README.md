@@ -57,11 +57,24 @@ The original Baileys library was created by [Adhiraj Singh](https://github.com/a
 - Full **newsletter (channel)** management API
 - **Album/media group** message sending
 - **Custom pairing codes** for streamlined device linking
+- **Panel-ready** installation — works on Pterodactyl and other hosting panels without errors
 - Zero external WhatsApp API dependency — uses the official WhatsApp Web protocol directly
 
 ---
 
 ## Changelog / What's New
+
+### v7.2.0 — Panel-Ready & Group AI Fix
+
+| Change | Details |
+|--------|---------|
+| Panel-ready installation | Package now installs without errors on any panel (Pterodactyl, etc.) — removed hardcoded `jimp` import, fixed `package.json` exports, removed `packageManager` lock |
+| `ai: true` works in groups | AI sparkle icon now works in **both private chats and groups** via dual-layer approach — stanza node + proto-level `botMetadata` |
+| Removed `botMessageSecret` | Previous random 32-byte secret caused WhatsApp servers to silently reject/stript messages — removed for reliability |
+| `jimp` is now fully optional | `generateProfilePicture` uses dynamic import via `getImageProcessingLibrary()` — works with `sharp`, `jimp`, or neither |
+| Added `MessageTypeKeys` | Runtime array of all valid message type keys (85 keys) — `MessageType` type was erased at compile time, now available as a value |
+| Fixed TypeScript build errors | Removed invalid `nativeFlowResponseMessage` and `carouselCardResponseMessage` direct access on `IMessage` |
+| Simplified package exports | Flattened `exports` map for better CJS/ESM compatibility across all bundlers and panel environments |
 
 ### v7.1.0 — Newer WhatsApp Compatibility
 
@@ -88,7 +101,7 @@ The original Baileys library was created by [Adhiraj Singh](https://github.com/a
 | Carousel & shop extraction | `extractMessageContent` now extracts text from `carouselMessage` and `shopStorefrontMessage` interactive sub-types |
 | Shop biz node fix | Shop messages (`shopStorefrontMessage`) now correctly receive the `<biz>` node for proper rendering |
 | AdditionalNodes merge fix | `ai: true` no longer overrides user-provided `additionalNodes` — they are now merged together |
-| botMessageSecret for newer WhatsApp | `ai: true` now generates a random 32-byte `botMessageSecret` in `Message.messageContextInfo` for compatibility with newer WhatsApp versions |
+| botMessageSecret for newer WhatsApp | `ai: true` embeds `botMetadata` in `Message.messageContextInfo` for group compatibility |
 | ViewOnce wrapper detection | Biz node detection now covers `listMessage` and `interactiveResponseMessage` wrapped in viewOnce messages |
 
 ---
@@ -96,6 +109,10 @@ The original Baileys library was created by [Adhiraj Singh](https://github.com/a
 ## Installation
 
 ### Via npm
+
+```bash
+npm install github:onxlmao/Baileys-Premod
+```
 
 ### Via GitHub (latest source)
 
@@ -126,7 +143,9 @@ import makeWASocket, { useMultiFileAuthState, DisconnectReason } from 'baileys'
 **CommonJS:**
 
 ```js
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('baileys')
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, proto } = require('baileys')
+// or
+const makeWASocket = require('baileys').default
 ```
 
 ### Requirements
@@ -371,11 +390,13 @@ await sock.sendMessage(groupId, {
 
 WhatsApp displays a small sparkle ✨ icon next to messages that are identified as AI-generated (similar to how Meta AI messages appear). Baileys Premod lets you add this badge to **any message type** with a single `ai: true` parameter.
 
-The implementation works via a dual mechanism:
-1. **Binary node layer**: A `<bot biz_bot="1"/>` XML node is appended to the message stanza, signaling WhatsApp to render the sparkle icon
-2. **Proto layer**: `botMetadata` (field 7) and `botMessageSecret` (field 6) are set in `Message.messageContextInfo` (field 35) — the `botMessageSecret` is a random 32-byte cryptographic secret required by newer WhatsApp versions to properly authenticate bot messages
+The implementation uses a dual-layer approach for maximum compatibility:
 
-> **How it works internally:** When `ai: true` is set, the library generates a random `botMessageSecret` (32 bytes), sets `botMetadata` with a default `personaId`, and attaches a `<bot biz_bot="1"/>` binary node to the message stanza. This combination ensures compatibility across all WhatsApp versions — older clients use the binary node, while newer clients validate the proto-level `messageContextInfo`.
+1. **Binary stanza layer**: A `<bot biz_bot="1"/>` XML node is appended to the message stanza. This is the primary mechanism used by WhatsApp to identify bot messages. It works reliably in **private chats**.
+
+2. **Proto message layer**: `botMetadata` is embedded in `Message.messageContextInfo` inside the encrypted message payload. This is critical for **group chats**, where WhatsApp servers only relay the encrypted sender-key payload to participants — the stanza-level `<bot>` node does not survive server-side relay in groups. By embedding `botMetadata` in the proto, it is preserved through encryption and available when participants decrypt the message.
+
+> **Why two layers?** In private chats, the message stanza goes directly from sender to receiver, so the `<bot>` stanza node arrives intact. In group chats, messages are encrypted with a sender key (`skmsg`) and relayed through WhatsApp servers — only the encrypted payload survives. The proto-level `botMetadata` ensures the AI icon works in both scenarios.
 
 The AI icon works in **both private chats and group chats**, and it can be combined with any message type — text, image, video, buttons, interactive messages, etc.
 
