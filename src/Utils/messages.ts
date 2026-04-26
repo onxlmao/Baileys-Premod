@@ -807,29 +807,6 @@ export const generateWAMessageContent = async(
                 m[messageType].contextInfo = message.contextInfo
         }
 
-        // AI icon support: set botMetadata + botMessageSecret in messageContextInfo
-        // Dual mechanism for maximum compatibility across WhatsApp versions:
-        // 1. Proto layer: botMetadata (field 7) + botMessageSecret (field 6) in Message.messageContextInfo (field 35)
-        // 2. Binary node layer: <bot biz_bot="1"/> additional node (set in messages-send.ts)
-        // Works in both private chats and groups
-        // Based on nstar-y/bail implementation, enhanced for newer WhatsApp versions
-        // NOTE: messageContextInfo is on the top-level Message proto (field 35), NOT on sub-message types
-        if('ai' in message && !!message.ai) {
-                const botMetadata: proto.IBotMetadata = typeof message.ai === 'object'
-                        ? message.ai
-                        : {
-                                personaId: 'baileys-premod',
-                        }
-
-                m.messageContextInfo = {
-                        ...(m.messageContextInfo || {}),
-                        // botMessageSecret: random 32-byte secret for bot message authentication
-                        // Required by newer WhatsApp versions to properly identify AI/bot messages
-                        botMessageSecret: (m.messageContextInfo as any)?.botMessageSecret || randomBytes(32),
-                        botMetadata,
-                }
-        }
-
         return WAProto.Message.fromObject(m)
 }
 

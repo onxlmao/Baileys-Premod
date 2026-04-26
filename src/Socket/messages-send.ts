@@ -393,11 +393,7 @@ export const makeMessagesSocket = (config: SocketConfig) => {
                         deviceSentMessage: {
                                 destinationJid,
                                 message
-                        },
-                        // Ensure messageContextInfo (including botMetadata + botMessageSecret) is present
-                        // on the outer message for newer WhatsApp versions that validate bot fields
-                        // at the deviceSentMessage wrapper level, not just the inner message
-                        messageContextInfo: message.messageContextInfo || {}
+                        }
                 }
 
                 const extraAttrs = {}
