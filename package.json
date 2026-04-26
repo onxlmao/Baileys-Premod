@@ -27,15 +27,10 @@
     "types": "lib/index.d.ts",
     "exports": {
         ".": {
-            "import": {
-                "types": "./lib/index.d.ts",
-                "default": "./index.mjs"
-            },
-            "require": {
-                "types": "./lib/index.d.ts",
-                "default": "./index.cjs"
-            },
-            "types": "./lib/index.d.ts"
+            "types": "./lib/index.d.ts",
+            "import": "./index.mjs",
+            "require": "./index.cjs",
+            "default": "./index.cjs"
         }
     },
     "files": [
@@ -110,7 +105,7 @@
             "optional": true
         }
     },
-    "packageManager": "yarn@1.22.19",
+
     "engines": {
         "node": ">=20.0.0"
     }

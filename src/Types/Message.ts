@@ -27,6 +27,10 @@ export type WAMediaUpload = Buffer | WAMediaPayloadStream | WAMediaPayloadURL
 /** Set of message types that are supported by the library */
 export type MessageType = keyof proto.Message
 
+/** Runtime object containing all valid message type keys as an array */
+const PROTO_METHODS = new Set(['create','encode','encodeDelimited','decode','decodeDelimited','verify','fromObject','toObject','getTypeUrl'])
+export const MessageTypeKeys = Object.keys(proto.Message).filter((k: string) => !PROTO_METHODS.has(k)) as MessageType[]
+
 export type DownloadableMessage = { mediaKey?: Uint8Array | null, directPath?: string | null, url?: string | null }
 
 export type MessageReceiptType = 'read' | 'read-self' | 'hist_sync' | 'peer_msg' | 'sender' | 'inactive' | 'played' | undefined

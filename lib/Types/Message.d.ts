@@ -36,6 +36,7 @@ export type WAMediaPayloadStream = {
 export type WAMediaUpload = Buffer | WAMediaPayloadStream | WAMediaPayloadURL;
 /** Set of message types that are supported by the library */
 export type MessageType = keyof proto.Message;
+export declare const MessageTypeKeys: MessageType[];
 export type DownloadableMessage = {
     mediaKey?: Uint8Array | null;
     directPath?: string | null;
