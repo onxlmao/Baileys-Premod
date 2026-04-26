@@ -1113,39 +1113,7 @@ export const extractMessageContent = (content: WAMessageContent | undefined | nu
                 }
         }
 
-        // Handle nativeFlowResponseMessage direct extraction (newer WhatsApp versions)
-        // Some newer WhatsApp clients may send nativeFlowResponseMessage without wrapping it
-        // in interactiveResponseMessage — handle this case for forward compatibility
-        if(content?.nativeFlowResponseMessage) {
-                const nativeResponse = content.nativeFlowResponseMessage
-                if(nativeResponse.paramsJson) {
-                        try {
-                                const params = JSON.parse(nativeResponse.paramsJson)
-                                if(params.id) {
-                                        return { conversation: params.id }
-                                }
-                                if(params.title) {
-                                        return { conversation: params.title }
-                                }
-                                if(params.description) {
-                                        return { conversation: params.description }
-                                }
-                        } catch { /* invalid JSON, skip */ }
-                }
-        }
 
-        // Handle carousel card selection response (newer WhatsApp)
-        // When a user taps a card in a carousel, WhatsApp sends an interactiveResponseMessage
-        // with carouselCardResponseMessage containing the card index and row ID
-        if(content?.carouselCardResponseMessage) {
-                const cardResponse = content.carouselCardResponseMessage
-                if(cardResponse.cardIndex !== undefined && cardResponse.cardIndex !== null) {
-                        return { conversation: `card:${cardResponse.cardIndex}` }
-                }
-                if(cardResponse.rowId) {
-                        return { conversation: cardResponse.rowId }
-                }
-        }
 
         // Handle buttonsResponseMessage extraction - extract selected button text
         if(content?.buttonsResponseMessage) {
